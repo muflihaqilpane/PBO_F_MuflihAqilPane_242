@@ -1,99 +1,142 @@
 import java.util.Scanner;
 
-// Kelas User sebagai superclass
+// SUPERCLASS: User
 class User {
+    // Enkapsulasi: atribut diset private
     private String nama;
     private String nim;
 
+    // Constructor
     public User(String nama, String nim) {
         this.nama = nama;
         this.nim = nim;
     }
 
+    // Getter dan Setter (Encapsulation)
     public String getNama() {
         return nama;
+    }
+
+    public void setNama(String nama) {
+        this.nama = nama;
     }
 
     public String getNim() {
         return nim;
     }
 
-    public boolean login(String inputNim) {
-        return this.nim.equals(inputNim);
+    public void setNim(String nim) {
+        this.nim = nim;
     }
 
+    // Method login (akan dioverride oleh subclass)
+    public boolean login(String input1, String input2) {
+        return false; // default
+    }
+
+    // Menampilkan info user
     public void displayInfo() {
-        System.out.println("Informasi Pengguna: " + nama);
+        System.out.println("Informasi Pengguna: " + nama + " - " + nim);
     }
 }
 
-// Kelas Admin sebagai subclass dari User
+// SUBCLASS: Admin
 class Admin extends User {
+    // Tambahan atribut Admin
     private String username;
     private String password;
 
+    // Constructor: menggunakan super untuk inisialisasi nama dan nim
     public Admin(String nama, String nim, String username, String password) {
-        super(nama, nim);
+        super(nama, nim); // panggil constructor dari User
         this.username = username;
         this.password = password;
     }
 
+    // Override method login: cocokkan username dan password
+    @Override
     public boolean login(String inputUsername, String inputPassword) {
-        return this.username.equals(inputUsername) && this.password.equals(inputPassword);
+        return inputUsername.equals(username) && inputPassword.equals(password);
     }
 
-    public void displayAdminInfo() {
-        System.out.println("Login Admin berhasil: " + getNama());
+    // Override method displayInfo
+    @Override
+    public void displayInfo() {
+        System.out.println("Login Admin berhasil!");
+        System.out.println("Selamat datang, Admin: " + getNama());
     }
 }
 
-// Kelas Mahasiswa sebagai subclass dari User
+// SUBCLASS: Mahasiswa
 class Mahasiswa extends User {
+
+    // Constructor: menggunakan super
     public Mahasiswa(String nama, String nim) {
         super(nama, nim);
     }
 
-    public boolean loginMahasiswa(String inputNim) {
-        return super.login(inputNim);
+    // Override login: cocokkan nama dan nim
+    @Override
+    public boolean login(String inputNama, String inputNim) {
+        return inputNama.equals(getNama()) && inputNim.equals(getNim());
     }
 
-    public void displayMahasiswaInfo() {
-        System.out.println("Login Mahasiswa berhasil: " + getNama());
+    // Override displayInfo
+    @Override
+    public void displayInfo() {
+        System.out.println("Login Mahasiswa berhasil!");
+        System.out.println("Selamat datang, Mahasiswa: " + getNama() + " | NIM: " + getNim());
     }
 }
 
-// Kelas LoginSystem sebagai program utama
+// Kelas Utama (main)
 public class LoginSystem {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
 
-        Admin admin = new Admin("Admin Satu", "0001", "admin", "admin123");
-        Mahasiswa mahasiswa = new Mahasiswa("Aqil", "242");
+        // Data dummy (sementara)
+        Admin admin = new Admin("Admin Satu", "001", "admin123", "pass123");
+        Mahasiswa mahasiswa = new Mahasiswa("Budi", "123456");
 
-        System.out.println("Pilih login: 1. Admin  2. Mahasiswa");
-        int pilihan = scanner.nextInt();
-        scanner.nextLine();
+        System.out.println("=== Sistem Login ===");
+        System.out.println("1. Login sebagai Admin");
+        System.out.println("2. Login sebagai Mahasiswa");
+        System.out.print("Pilih opsi (1/2): ");
+        int choice = scanner.nextInt();
+        scanner.nextLine(); // membersihkan newline
 
-        if (pilihan == 1) {
-            System.out.print("Masukkan username: ");
+        boolean isLoggedIn = false;
+
+        // Login Admin
+        if (choice == 1) {
+            System.out.print("Masukkan Username: ");
             String username = scanner.nextLine();
-            System.out.print("Masukkan password: ");
+            System.out.print("Masukkan Password: ");
             String password = scanner.nextLine();
 
-            if (admin.login(username, password)) {
-                admin.displayAdminInfo();
+            isLoggedIn = admin.login(username, password);
+
+            if (isLoggedIn) {
+                admin.displayInfo();
             } else {
-                System.out.println("Login Admin gagal.");
+                System.out.println("Login Admin gagal! Username atau password salah.");
             }
-        } else if (pilihan == 2) {
+
+            // Login Mahasiswa
+        } else if (choice == 2) {
+            System.out.print("Masukkan Nama: ");
+            String nama = scanner.nextLine();
             System.out.print("Masukkan NIM: ");
             String nim = scanner.nextLine();
 
-            if (mahasiswa.loginMahasiswa(nim)) {
-                mahasiswa.displayMahasiswaInfo();
+            isLoggedIn = mahasiswa.login(nama, nim);
+
+            if (isLoggedIn) {
+                mahasiswa.displayInfo();
             } else {
-                System.out.println("Login Mahasiswa gagal.");
+                System.out.println("Login Mahasiswa gagal! Nama atau NIM salah.");
             }
+
         } else {
             System.out.println("Pilihan tidak valid.");
         }
