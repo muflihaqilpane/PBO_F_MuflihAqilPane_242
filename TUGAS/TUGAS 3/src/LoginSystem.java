@@ -63,7 +63,7 @@ class Admin extends User {
     @Override
     public void displayInfo() {
         System.out.println("Login Admin berhasil!");
-        System.out.println("Selamat datang, Admin: " + getNama());
+        System.out.println("Selamat datang, Admin: " + getNama() + " | NIM: " + getNim());
     }
 }
 
@@ -96,7 +96,7 @@ public class LoginSystem {
 
         // Data dummy (sementara)
         Admin admin = new Admin("Admin Satu", "001", "admin123", "pass123");
-        Mahasiswa mahasiswa = new Mahasiswa("Budi", "123456");
+        Mahasiswa mahasiswa = new Mahasiswa("aqil", "242");
 
         System.out.println("=== Sistem Login ===");
         System.out.println("1. Login sebagai Admin");
